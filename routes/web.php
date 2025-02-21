@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AmiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MailableName;
@@ -17,13 +19,18 @@ use App\Mail\MailableName;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::get('/dashboard',[DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+Route::get('/friends',[DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('friends');
+Route::get('/requests',[DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('requests');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,6 +42,13 @@ Route::get('/test-email', function () {
         $message->to('hamzagbouri2004@gmail.com')->subject('Test Email');
     });
 });
-Route::post('/addFriend', [ProfileController::class, 'addFriend'])->name('ami.envoyer');
-
+Route::post('/addFriend', [AmiController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('ami.envoyer');
+Route::put('/ami/accepter/{id}', [AmiController::class, 'accepter'])->middleware(['auth', 'verified'])->name('ami.accepter');
+Route::delete('/ami/annuler/{id}', [AmiController::class, 'annuler'])->middleware(['auth', 'verified'])->name('ami.annuler');
+Route::get('/dto', [DashboardController::class, 'show']);
+Route::post('/broadcasting/auth', function (Illuminate\Http\Request $request) {
+    return Broadcast::auth($request);
+});
 require __DIR__.'/auth.php';

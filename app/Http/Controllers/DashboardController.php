@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserDTO;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -23,6 +24,19 @@ class DashboardController extends Controller
             $users = User::all();
         }
 
-        return view('dashboard', compact('users'));
+        $user = auth()->user();
+
+        // Fetch all received and sent requests, regardless of status
+        $receivedRequests = $user->receivedRequests()->with('sender')->get();
+        $sentRequests = $user->sentRequests()->with('receiver')->get();
+
+        return view('dashboard', compact('users', 'receivedRequests', 'sentRequests'));
+    }
+    public function show()
+    {
+        $user = User::find(5);
+        $userDTO = UserDTO::fromModel($user);
+
+        return response()->json($userDTO->toArray());
     }
 }

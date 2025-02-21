@@ -28,6 +28,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'birthday' => ['required', 'date', 'before:yesterday'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
             'cover_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'], // Add validation for profile picture
             'bio' => ['nullable', 'string'],

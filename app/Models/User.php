@@ -17,6 +17,7 @@ class User extends Authenticatable
         'city',
         'birthday',
         'cover_photo',
+        'pseudo',
         'bio',
         'password',
     ];
