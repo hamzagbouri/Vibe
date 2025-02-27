@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AmiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -24,10 +25,10 @@ use App\Mail\MailableName;
 Route::get('/dashboard',[DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-Route::get('/friends',[DashboardController::class, 'index'])
+Route::get('/friends',[DashboardController::class, 'friends'])
     ->middleware(['auth', 'verified'])
     ->name('friends');
-Route::get('/requests',[DashboardController::class, 'index'])
+Route::get('/requests',[DashboardController::class, 'requests'])
     ->middleware(['auth', 'verified'])
     ->name('requests');
 
@@ -47,8 +48,15 @@ Route::post('/addFriend', [AmiController::class, 'store'])
     ->name('ami.envoyer');
 Route::put('/ami/accepter/{id}', [AmiController::class, 'accepter'])->middleware(['auth', 'verified'])->name('ami.accepter');
 Route::delete('/ami/annuler/{id}', [AmiController::class, 'annuler'])->middleware(['auth', 'verified'])->name('ami.annuler');
-Route::get('/dto', [DashboardController::class, 'show']);
 Route::post('/broadcasting/auth', function (Illuminate\Http\Request $request) {
     return Broadcast::auth($request);
 });
+Route::post('/posts', [PostController::class, 'store'])->middleware(['auth','verified'])->name('posts.store');
+Route::put('/post/{post}', [PostController::class, 'update'])->middleware(['auth','verified'])->name('posts.edit');
+Route::delete('/post/{post}', [PostController::class, 'destroy'])->middleware(['auth','verified'])->name('posts.destroy');
+// Routes for liking and commenting on posts
+Route::post('posts/{post}/like', [PostController::class, 'like'])->middleware(['auth','verified'])->name('posts.like');
+Route::post('posts/{post}/comment', [PostController::class, 'comment'])->middleware(['auth','verified'])->name('posts.comment');
+
 require __DIR__.'/auth.php';
+

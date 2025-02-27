@@ -31,9 +31,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'birthday' => 'date',
     ];
-
-
-
     /**
      * Un utilisateur peut envoyer plusieurs demandes d'ami.
      */
@@ -49,4 +46,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ami::class, 'id_receiver');
     }
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    // Relation User -> Commentaires
+    public function commentaires(): HasMany
+    {
+        return $this->hasMany(Commantaire::class);
+    }
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'ami', 'id_sender', 'id_receiver')
+            ->wherePivot('status', 'accepted')
+            ->select('users.*', 'ami.id_sender as pivot_id_sender', 'ami.id_receiver as pivot_id_receiver') // Specify the same columns
+            ->union(
+                $this->belongsToMany(User::class, 'ami', 'id_receiver', 'id_sender')
+                    ->wherePivot('status', 'accepted')
+                    ->select('users.*', 'ami.id_sender as pivot_id_sender', 'ami.id_receiver as pivot_id_receiver') // Specify the same columns
+            );
+    }
+
+
 }

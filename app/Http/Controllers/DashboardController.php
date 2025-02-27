@@ -2,13 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use App\Models\UserDTO;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index()
+    {
+        $user = auth()->user();
+        $friends = $user->friends()->get();
+        $posts = Post::whereIn('user_id', $friends->pluck('id')->push($user->id))
+            ->orderBy('created_at', 'desc') // Sort by the latest post
+            ->get();
+
+        return view('dashboard', compact('friends','posts'));
+    }
+
+    public function friends(Request $request)
     {
         // Get the search term from the request
         $search = $request->input('search');
@@ -30,13 +42,6 @@ class DashboardController extends Controller
         $receivedRequests = $user->receivedRequests()->with('sender')->get();
         $sentRequests = $user->sentRequests()->with('receiver')->get();
 
-        return view('dashboard', compact('users', 'receivedRequests', 'sentRequests'));
-    }
-    public function show()
-    {
-        $user = User::find(5);
-        $userDTO = UserDTO::fromModel($user);
-
-        return response()->json($userDTO->toArray());
+        return view('friends', compact('users', 'receivedRequests', 'sentRequests'));
     }
 }
