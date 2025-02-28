@@ -53,10 +53,12 @@ Route::post('/broadcasting/auth', function (Illuminate\Http\Request $request) {
 });
 Route::post('/posts', [PostController::class, 'store'])->middleware(['auth','verified'])->name('posts.store');
 Route::put('/post/{post}', [PostController::class, 'update'])->middleware(['auth','verified'])->name('posts.edit');
+Route::get('/profile/{user:pseudo}', [ProfileController::class, 'show'])->middleware(['auth','verified'])->name('profile');
 Route::delete('/post/{post}', [PostController::class, 'destroy'])->middleware(['auth','verified'])->name('posts.destroy');
 // Routes for liking and commenting on posts
 Route::post('posts/{post}/like', [PostController::class, 'like'])->middleware(['auth','verified'])->name('posts.like');
 Route::post('posts/{post}/comment', [PostController::class, 'comment'])->middleware(['auth','verified'])->name('posts.comment');
 
 require __DIR__.'/auth.php';
+
 

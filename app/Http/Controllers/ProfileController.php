@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,4 +84,40 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function show(User $user)
+    {
+        // Get the user's posts with their comments
+        $posts = $user->posts()->with(['commantaires.user', 'likes'])->latest()->get();
+
+        // Get the user's friends
+        $friends = $user->friends()->get();
+
+        // Check if the auth user is friends with this user
+        $isFriend = false;
+        $friendRequestStatus = null;
+
+        if (auth()->check() && auth()->id() != $user->id) {
+            // Check sent requests
+            $sentRequest = auth()->user()->sentRequests()
+                ->where('id_receiver', $user->id)
+                ->first();
+
+            // Check received requests
+            $receivedRequest = auth()->user()->receivedRequests()
+                ->where('id_sender', $user->id)
+                ->first();
+
+            if ($sentRequest) {
+                $friendRequestStatus = $sentRequest->status;
+                $isFriend = ($sentRequest->status === 'accepted');
+            } elseif ($receivedRequest) {
+                $friendRequestStatus = $receivedRequest->status;
+                $isFriend = ($receivedRequest->status === 'accepted');
+            }
+        }
+
+        return view('profile', compact('user', 'posts', 'friends', 'isFriend', 'friendRequestStatus'));
+    }
+
 }

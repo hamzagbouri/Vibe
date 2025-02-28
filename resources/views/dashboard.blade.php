@@ -151,8 +151,10 @@
                     <ul>
                         @foreach ($friends as $friend)
                             <li class="flex items-center mb-4">
-                                <img src="{{ asset($friend->cover_photo ?? 'uploads/cover_picture/none.png') }}" class="w-10 h-10 rounded-full" alt="Profile">
-                                <span class="ml-2">{{ $friend->name }}</span>
+                                <a href="{{ route('profile', $friend->pseudo) }}" class="flex items-center">
+                                    <img src="{{ asset($friend->cover_photo ?? 'uploads/cover_picture/none.png') }}" class="w-10 h-10 rounded-full" alt="Profile">
+                                    <span class="ml-2">{{ $friend->name }}</span>
+                                </a>
                             </li>
                         @endforeach
                     </ul>
