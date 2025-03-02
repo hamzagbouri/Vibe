@@ -3,29 +3,36 @@
     <div class="bg-white py-4 shadow-md">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-6">
             <img class="h-10" src="uploads/logo.jpeg" alt="Logo">
-            <form method="POST" action="{{ route('login') }}" class="flex items-center space-x-4">
-                @csrf
-                <input type="email" name="email" id="email" class="px-4 py-2 rounded-md border border-gray-300" placeholder="Email" required autofocus autocomplete="username">
-                <input type="password" name="password" id="password" class="px-4 py-2 rounded-md border border-gray-300" placeholder="Password" required autocomplete="current-password">
-                <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded-md">Login</button>
-            </form>
+            <div class="flex flex-col">
+                <form method="POST" action="{{ route('login') }}" class="flex flex-col space-y-2">
+                    @csrf
+                    <input type="email" name="email" id="email" class="px-4 py-2 rounded-md border border-gray-300" placeholder="Email" required autofocus autocomplete="username">
+                    <input type="password" name="password" id="password" class="px-4 py-2 rounded-md border border-gray-300" placeholder="Password" required autocomplete="current-password">
+                    <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded-md">Login</button>
+                </form>
+                <div class="flex items-center justify-center space-x-2 mt-2">
+                    <a href="{{ route('login.google') }}" class="bg-red-600 text-white py-2 px-4 rounded-md">
+                        Login with Google
+                    </a>
+                    <a href="#" class="bg-blue-600 text-white py-2 px-4 rounded-md">
+                        Login with Facebook
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Main Content Section -->
     <div class="flex min-h-screen justify-center items-center px-6 py-12 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl w-full">
-            <!-- Left: Login Form -->
-            <div class="space-y-6 bg-white p-8 rounded-lg ">
+            <!-- Left: Welcome Section -->
+            <div class="space-y-6 bg-white p-8 rounded-lg">
                 <div class="flex justify-center">
                     <img src="uploads/logo.jpeg" alt="Logo" class="w-28 h-28 object-contain">
                 </div>
                 <h2 class="text-center text-2xl font-bold text-gray-900">Avec Vibe</h2>
-                <p class="text-center text-gray-600"> partagez et restez en contact avec votre entourage.</p>
-
-                <!-- Logo (e.g., Facebook logo) -->
+                <p class="text-center text-gray-600">Partagez et restez en contact avec votre entourage.</p>
             </div>
-
 
             <!-- Right: Signup Form -->
             <div class="space-y-6 bg-white p-8 rounded-lg shadow-md">

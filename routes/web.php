@@ -4,6 +4,7 @@ use App\Http\Controllers\AmiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -58,6 +59,13 @@ Route::delete('/post/{post}', [PostController::class, 'destroy'])->middleware(['
 // Routes for liking and commenting on posts
 Route::post('posts/{post}/like', [PostController::class, 'like'])->middleware(['auth','verified'])->name('posts.like');
 Route::post('posts/{post}/comment', [PostController::class, 'comment'])->middleware(['auth','verified'])->name('posts.comment');
+Route::get('chat', function (){
+    return view('chat');
+});
+Route::middleware('web')->group(function () {
+    Route::get('login/google', [SocialiteController::class, 'redirectToGoogle'])->name('login.google');
+    Route::get('login/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+});
 
 require __DIR__.'/auth.php';
 
