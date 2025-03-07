@@ -15,8 +15,8 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('requests')" :active="request()->routeIs('requests')">
-                        {{ __('Requests') }}
+                    <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index')">
+                        {{ __('Chats (0)') }}
                     </x-nav-link>
                     <x-nav-link :href="route('friends')" :active="request()->routeIs('friends')">
                         {{ __('Friends') }}
@@ -41,7 +41,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Edit Profile') }}
+                            {{ __('Settings') }}
                         </x-dropdown-link>
                         <x-dropdown-link :href="route('profile', Auth::user()->pseudo)">
                             {{ __('Profile') }}
@@ -105,5 +105,20 @@
                 </form>
             </div>
         </div>
+    </div>
+    <div class="fixed top-5 right-5 z-50">
+        @if(session('success'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+                 class="bg-green-500 text-white p-4 rounded-md shadow-md">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+                 class="bg-red-500 text-white p-4 rounded-md shadow-md">
+                {{ session('error') }}
+            </div>
+        @endif
     </div>
 </nav>

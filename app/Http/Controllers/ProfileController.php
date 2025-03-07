@@ -19,6 +19,8 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'link' => null,
+            'qrCode' => null
         ]);
     }
 

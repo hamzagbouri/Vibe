@@ -19,6 +19,7 @@ class User extends Authenticatable
         'cover_photo',
         'pseudo',
         'bio',
+        'isActive',
         'password',
     ];
 
@@ -66,6 +67,33 @@ class User extends Authenticatable
                     ->wherePivot('status', 'accepted')
                     ->select('users.*', 'ami.id_sender as pivot_id_sender', 'ami.id_receiver as pivot_id_receiver') // Specify the same columns
             );
+    }
+    public function getFriends()
+    {
+        // Amis où l'utilisateur est l'expéditeur
+        $sentFriends = $this->belongsToMany(User::class, 'ami', 'id_sender', 'id_receiver')
+            ->wherePivot('status', 'accepted')
+            ->select('users.*', 'ami.id_sender as pivot_id_sender', 'ami.id_receiver as pivot_id_receiver')
+            ->get();
+
+        // Amis où l'utilisateur est le destinataire
+        $receivedFriends = $this->belongsToMany(User::class, 'ami', 'id_receiver', 'id_sender')
+            ->wherePivot('status', 'accepted')
+            ->select('users.*', 'ami.id_sender as pivot_id_sender', 'ami.id_receiver as pivot_id_receiver')
+            ->get();
+
+        // Fusionner les deux collections
+        return $sentFriends->merge($receivedFriends);
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    // Conversations the user is part of
+    public function conversations() {
+        return $this->hasMany(Conversation::class, 'user_one_id')
+            ->orWhere('user_two_id', $this->id);
     }
 
 

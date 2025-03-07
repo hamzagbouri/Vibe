@@ -66,4 +66,47 @@ class SocialiteController extends Controller
             return redirect('/login')->with('error', 'Google login failed. Please try again.');
         }
     }
+    public function redirectToFacebook()
+    {
+        Log::info('Redirecting to Facebook authentication page.');
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback()
+    {
+        try {
+            $facebookUser = Socialite::driver('facebook')->user();
+            Log::info('Facebook user data received:', [
+                'name'  => $facebookUser->getName(),
+                'email' => $facebookUser->getEmail(),
+                'id'    => $facebookUser->getId(),
+            ]);
+
+            // Vérifier si l'utilisateur existe déjà.
+            $user = User::where('email', $facebookUser->getEmail())->first();
+
+            if ($user) {
+                Log::info('User exists. Logging in user: ' . $user->email);
+                Auth::login($user);
+            } else {
+                Log::info('User does not exist. Creating new user with email: ' . $facebookUser->getEmail());
+                $user = User::create([
+                    'name'       => $facebookUser->getName(),
+                    'email'      => $facebookUser->getEmail(),
+                    'pseudo'     => Str::slug($facebookUser->getName()),
+                    'city'       => 'Unknown',
+                    'birthday'   => '2000-01-01',
+                    'password'   => bcrypt(uniqid()),
+                    'cover_photo'=> $facebookUser->getAvatar() ?? 'uploads/cover_picture/none.png',
+                ]);
+                Log::info('New user created with email: ' . $user->email);
+                Auth::login($user);
+            }
+
+            return redirect(RouteServiceProvider::HOME);
+        } catch (\Exception $e) {
+            Log::error('Error during Facebook callback: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Facebook login failed. Please try again.');
+        }
+    }
 }

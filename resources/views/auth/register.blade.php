@@ -14,7 +14,7 @@
                     <a href="{{ route('login.google') }}" class="bg-red-600 text-white py-2 px-4 rounded-md">
                         Login with Google
                     </a>
-                    <a href="#" class="bg-blue-600 text-white py-2 px-4 rounded-md">
+                    <a href="{{ route('login.facebook') }}" class="bg-blue-600 text-white py-2 px-4 rounded-md">
                         Login with Facebook
                     </a>
                 </div>

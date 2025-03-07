@@ -17,7 +17,7 @@
                     @endif
 
                     <!-- Search Form -->
-                    <form method="GET" action="{{ route('dashboard') }}" class="mb-6">
+                    <form method="GET" action="{{ route('friends') }}" class="mb-6">
                         <div class="flex space-x-4">
                             <input
                                 type="text"

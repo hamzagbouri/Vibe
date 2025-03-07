@@ -24,6 +24,10 @@
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+            <div>
+                @include('profile.partials.invite-friend')
+
+            </div>
         </div>
     </div>
 </x-app-layout>
